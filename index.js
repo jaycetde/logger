@@ -1,15 +1,18 @@
 'use strict';
 
-var net = require('net')
+var debug = require('debug')('index')
+	, net = require('net')
 	, dgram = require('dgram')
-	, util = require('util')
-	, Client = require('./lib/client.js')
-	, Instance = require('./lib/handler.js')
-	, EventEmitter = require('events').EventEmitter
-	, dgramServer = dgram.createSocket('udp4')
+	, dgramServer
 	, netServer
-	, messageReg = /^([0-9]+|[a-z\-]+):([0-9]+):(([0-5]):)?(.+)$/
-	, isNumeric = /^[0-9]+$/;
+	, messageReg = /^([0-9]+|[a-z\-]+):([0-9]+):(([1-5]):)?(.+)$/
+	, isNumeric = /^[0-9]+$/
+	, clients = {}
+	, handlers = {};
+
+exports.Client = require('./lib/client');
+exports.Handler = require('./lib/handler');
+exports.console = require('./lib/loggers/console');
 
 // Modify net.Socket prototype to add custom JSON methods
 net.Socket.prototype.send = function (data) {
@@ -35,18 +38,20 @@ function generateId() {
 	return id;
 }
 
-
+dgramServer = dgram.createSocket('udp4');
 
 netServer = net.createServer(function netConnection(socket) {
 
 	var client
-		, instance
+		, handler
 		, buffer = '';
 
 	socket.setEncoding('utf8');
 	socket.setKeepAlive(true, 1000 * 120);
 
 	socket.on('data', function dataReceived(data) {
+
+		data = data.toString();
 
 		var message;
 
@@ -83,17 +88,30 @@ netServer = net.createServer(function netConnection(socket) {
 
 	socket.once('handshake', function (data) {
 
-		if (data.instance && (instance = instances[data.instance])) {
+		debug('Handshake received');
+
+		if (data.handler && (handler = handlers[data.handler])) {
 
 			// Authentication
 
-			client = new Client(generateId(), socket, instance);
+			client = new exports.Client(generateId(), socket, handler);
+
+			debug('New client: ' + client.id);
 
 			clients[client.id] = client;
 
 			socket.send({
-					client: client.id
-				, config: instance.config()
+					type: 'handshake'
+				,	client: client.id
+				, config: handler.config()
+			});
+
+			socket.on('close', function () {
+				debug('-- Socket Ended --');
+				setTimeout(function () {
+					debug('-- Removing Client --');
+					delete clients[client.id];
+				}, 1000 * 5);
 			});
 
 		}
@@ -154,113 +172,38 @@ function receivedMessage(msg, rinfo) {
 		// Pass object to handler
 		client.log(message);
 
-	} else if (typeof(instances[segments[1]]) !== 'undefined') {
-		console.log('named instance');
+	} else if (typeof(handlers[segments[1]]) !== 'undefined') {
+		debug('named instance');
 		//clients[segments[i]].log(rinfo.address, segments[2], segments[5], segments[4]);
 	} else {
-		console.log('unhandled udp');
+		debug('unhandled udp');
 	}
 
 }
 
-
-
-dgramServer.on('message', receivedMessage);
+netServer.on('listening', function () {
+	var address = netServer.address();
+	debug('Listening: TCP ' + address.port);
+});
 
 dgramServer.on('listening', function ready() {
 	var address = dgramServer.address();
-	console.log('Listening: UDP ' + address.port);
+	debug('Listening: UDP ' + address.port);
 });
 
-dgramServer.bind(41234);
+dgramServer.on('message', receivedMessage);
 
-netServer.listen(41234, function () {
-	var address = netServer.address();
-	console.log('Listening: TCP ' + address.port);
-});
+exports.listen = function (port) {
 
-exports.addInstance = function (name, instance) {
+	netServer.listen(port)
+	dgramServer.bind(port);
 
 };
 
-function Interface() {
-	EventEmitter.call(this);
-	this.clients = {};
-	this.stack = [];
-	this.dropped = {};
-}
+exports.setHandler = function (handler) {
 
-util.inherits(Interface, EventEmitter);
-
-Interface.prototype.use = function (fn) {
-	if (typeof(fn) === 'Function') {
-		this.stack.push(fn);
+	if (handler instanceof exports.Handler) {
+		handlers[handler.id] = handler;
 	}
-};
-
-Interface.prototype.runStack = function () {
-	var self = this
-		, args = Array.prototype.splice.call(arguments, 0)
-		, callback = args.pop()
-		, applyArgs = args.concat([next])
-		, l = self.stack.length
-		, i = 0;
-
-	function next(err) {
-
-		if (err || i >= l) {
-			return callback.apply(self, [err].concat(args));
-		}
-
-		return self.stack[i++].apply(self, applyArgs);
-
-	}
-
-	self.stack[i++].apply(self, applyArgs);
-
-};
-
-Interface.prototype.connect = function (socket, handshakeData) {
-
-	var client = {
-			id: generateId()
-		,	socket: socket
-		, name: handshakeData.client
-		, inc: 0
-	};
-
-	this.clients[client.id] = client;
-
-	this.emit('register', client.id);
-
-	socket.send('config', {
-			clientId: client.id
-	});
-
-};
-
-Interface.prototype.log = function (clientId, seq, message, level) {
-
-	var client = this.clients[clientId];
-
-	if (!client) {
-		return console.log('bad client id');
-	}
-
-	if (seq < client.inc) { // Previously missed packet
-		if (!this.found(seq)) {
-			return;
-		}
-	} else if (seq > client.inc) { // Past expected packet (must have dropped 1 or more)
-		// add all missed packets to queue while client.inc <= seq - queue(client.inc += 1)
-		while (client.inc < seq) {
-			this.lost(client.inc);
-			client.inc += 1;
-		}
-	}
-
-	client.inc += 1;
-
-	this.runStack({message: message});
 
 };
