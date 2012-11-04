@@ -5,7 +5,7 @@ var debug = require('debug')('index')
 	, dgram = require('dgram')
 	, dgramServer
 	, netServer
-	, messageReg = /^([0-9]+|[a-z\-]+):([0-9]+):(([1-5]):)?(.+)$/
+	, messageReg = /^([0-9]+|[a-z\-_]+):([0-9]+)?:([1-5])?:(.+)$/
 	, isNumeric = /^[0-9]+$/
 	, clients = {}
 	, handlers = {};
@@ -46,7 +46,7 @@ netServer = net.createServer(function netConnection(socket) {
 		, handler
 		, buffer = '';
 
-	socket.setEncoding('utf8');
+	socket.setEncoding('ascii');
 	socket.setKeepAlive(true, 1000 * 120);
 
 	socket.on('data', function dataReceived(data) {
@@ -133,10 +133,22 @@ netServer = net.createServer(function netConnection(socket) {
 
 function receivedMessage(msg, rinfo) {
 
-	var segments = messageReg.exec(msg.toString()) // [1] - client id || instance name; [2] - sequence inc; [4] - logger level (optional); [5] - message
+	var segments = messageReg.exec(msg.toString()) // [1] - client id || instance name; [2] - sequence inc; [3] - logger level (optional); [4] - message
 		, client
-		, seq = Number(segments[2])
 		, message;
+
+	if (segments === null) {
+		return console.log('bad regex');
+	}
+
+	// Construct object to pass through handler
+	message = {
+		message: segments[4]
+	};
+
+	if (segments[3]) {
+		message.level = segments[3];
+	}
 
 	if (isNumeric.test(segments[1]) && typeof(clients[segments[1]]) !== 'undefined') { // Client has connected through TCP
 
@@ -145,28 +157,27 @@ function receivedMessage(msg, rinfo) {
 		// Verify remoteInfo against client info
 
 		// Verify sequence id
+		if (typeof(segments[2]) !== 'undefined') {
 
-		if (seq < client.seq) { // Packet previously queued into dropped
-			if (!client.caught(seq)) { // Packet has already been removed from dropped
-				return; // Don't do anything
+			message.sequence = Number(segments[2]);
+
+			if (message.sequence < client.seq) { // Packet previously queued into dropped
+				if (!client.caught(message.sequence)) { // Packet has already been removed from dropped
+					return; // Don't do anything
+				}
+			} else if (message.sequence > client.seq) { // Past expected packet (must have dropped 1 or more)
+				while (client.seq < message.sequence) { // Queue missed packets as dropped
+					client.skipped(client.seq);
+					client.seq += 1;
+				}
 			}
-		} else if (seq > client.seq) { // Past expected packet (must have dropped 1 or more)
-			while (client.seq < seq) { // Queue missed packets as dropped
-				client.skipped(client.seq);
-				client.seq += 1;
+
+			client.seq += 1; // Next packet is expected to increment
+
+			if (client.seq >= 100000) {
+				client.seq = 0;
 			}
-		}
 
-		client.seq += 1; // Next packet is expected to increment
-
-		// Construct object to pass through handler
-		message = {
-			  sequence: seq
-			, message: segments[5]
-		};
-
-		if (segments[4]) {
-			message.level = segments[4];
 		}
 
 		// Pass object to handler

@@ -4,7 +4,9 @@ var logServer = require('./../index')
 	, testHandler = new logServer.Handler('test')
 	, secondHandler = new logServer.Handler('second');
 
-testHandler.use(logServer.console());
+testHandler.use(function (msg) {
+		console.log('Message: ' + msg.message);
+});
 
 logServer.setHandler(testHandler);
 
