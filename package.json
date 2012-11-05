@@ -1,0 +1,6 @@
+{       "name": "log-server"
+    ,   "description": "Centralized logging solution"
+    ,   "version": "0.1.0"
+    ,   "author": "Jayce Pulsipher <jaycemp@gmail.com>"
+    ,   "main": "index"
+}

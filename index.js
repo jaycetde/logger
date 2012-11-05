@@ -5,14 +5,16 @@ var debug = require('debug')('index')
 	, dgram = require('dgram')
 	, dgramServer
 	, netServer
-	, messageReg = /^([0-9]+|[a-z\-_]+):([0-9]+)?:([1-5])?:(.+)$/
+	, messageReg = /^([0-9]+|[a-z\-_]+):([0-9]+)?:([0-9]{13})?:([1-5])?:(.+)$/
 	, isNumeric = /^[0-9]+$/
 	, clients = {}
 	, handlers = {};
 
 exports.Client = require('./lib/client');
 exports.Handler = require('./lib/handler');
-exports.console = require('./lib/loggers/console');
+exports.console = require('./lib/middleware/console');
+exports.fileWriter = require('./lib/middleware/fileWriter');
+exports.extractor = require('./lib/middleware/extractor');
 
 // Modify net.Socket prototype to add custom JSON methods
 net.Socket.prototype.send = function (data) {
@@ -133,7 +135,7 @@ netServer = net.createServer(function netConnection(socket) {
 
 function receivedMessage(msg, rinfo) {
 
-	var segments = messageReg.exec(msg.toString()) // [1] - client id || instance name; [2] - sequence inc; [3] - logger level (optional); [4] - message
+	var segments = messageReg.exec(msg.toString()) // [1] - client id || instance name; [2] - sequence inc; [3] - timestamp; [4] - logger level (optional); [5] - message
 		, client
 		, message;
 
@@ -143,12 +145,11 @@ function receivedMessage(msg, rinfo) {
 
 	// Construct object to pass through handler
 	message = {
-		message: segments[4]
+		  sequence: segments[2]
+		, timestamp: new Date(Number(segments[3]))
+		, level: segments[4]
+		, message: segments[5]
 	};
-
-	if (segments[3]) {
-		message.level = segments[3];
-	}
 
 	if (isNumeric.test(segments[1]) && typeof(clients[segments[1]]) !== 'undefined') { // Client has connected through TCP
 
@@ -157,9 +158,9 @@ function receivedMessage(msg, rinfo) {
 		// Verify remoteInfo against client info
 
 		// Verify sequence id
-		if (typeof(segments[2]) !== 'undefined') {
+		if (isNumeric.test(message.sequence)) {
 
-			message.sequence = Number(segments[2]);
+			message.sequence = Number(message.sequence);
 
 			if (message.sequence < client.seq) { // Packet previously queued into dropped
 				if (!client.caught(message.sequence)) { // Packet has already been removed from dropped
