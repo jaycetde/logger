@@ -1,6 +1,10 @@
-{       "name": "log-server"
-    ,   "description": "Centralized logging solution"
-    ,   "version": "0.1.0"
-    ,   "author": "Jayce Pulsipher <jaycemp@gmail.com>"
-    ,   "main": "index"
+{
+	"author": "JayceTDE",
+	"name": "log-server",
+	"description": "Client for Log-Server",
+	"version": "0.1.0",
+	"main": "./index",
+	"engines": {
+		"node": "*"
+	}
 }
