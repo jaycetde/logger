@@ -8,7 +8,7 @@ var client1 = logger.createClient({
 		host: '192.168.1.120'
 	, port: 41234
 	, handler: 'test'
-	, stream: testFile
+	, fallback: testFile
 });
 
 var client2 = logger.createClient({
