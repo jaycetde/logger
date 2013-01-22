@@ -4,7 +4,7 @@ var logger = require('../index')
 	, fs = require('fs')
 	, testFile = fs.createWriteStream('./fallback.log', {flags: 'a'});
 
-var client = logger.createClient({
+var client1 = logger.createClient({
 		host: '192.168.1.120'
 	, port: 41234
 	, handler: 'test'
@@ -21,7 +21,7 @@ var x = 0;
 
 function run() {
 
-	client.error('Test ' + x++);
+	client1.error('Test ' + x++);
 	setTimeout(run, 500);
 
 }
