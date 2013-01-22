@@ -11,6 +11,12 @@ var client = logger.createClient({
 	, stream: testFile
 });
 
+var client2 = logger.createClient({
+		host: '192.168.1.120'
+	, port: 41234
+	, handler: 'test2'
+});
+
 var x = 0;
 
 function run() {
