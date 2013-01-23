@@ -27,10 +27,22 @@ var logServer = logger.createServer({
 	
 });
 
-var testHandler = logServer.createHandler('test');
+var handler1 = logServer.createHandler('test');
 
-testHandler.use(function (data) {
-	console.log(data.message);
+handler1.use(function (data) {
+	console.log('test: ' + data.message);
+});
+
+var handler2 = logServer.createHandler('test2');
+
+handler2.use(function (data) {
+	console.log('test2: ' + data.message);
+});
+
+var handler3 = logServer.createHandler('test3');
+
+handler3.use(function (data) {
+	console.log('test3: ' + data.message);
 });
 
 //lsAccess.use(logger.extractor(extractorReg, extractorMap));

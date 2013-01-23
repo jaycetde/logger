@@ -9,21 +9,39 @@ var client1 = logger.createClient({
 	, port: 41234
 	, handler: 'test'
 	, fallback: testFile
-});
+}, run1);
 
 var client2 = logger.createClient({
 		host: '192.168.1.120'
 	, port: 41234
 	, handler: 'test2'
-});
+}, run2);
+
+var client3 = logger.createClient({
+		host: '192.168.1.120'
+	, port: 41234
+	, handler: 'test3'
+}, run3);
 
 var x = 0;
 
-function run() {
+function run1() {
 
 	client1.error('Test ' + x++);
-	setTimeout(run, 500);
+	setTimeout(run1, 500);
 
 }
 
-setTimeout(run, 2000);
+function run2() {
+	
+	client2.info('Derpy');
+	setTimeout(run2, 1000);
+	
+}
+
+function run3() {
+	
+	client3.warn('ello mate');
+	setTimeout(run3, 2000);
+	
+}

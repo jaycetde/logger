@@ -3,12 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="f3194fd4-fc65-475f-acc1-0761e9936d7f" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/client.js" afterPath="$PROJECT_DIR$/lib/client.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/middleware/console.js" afterPath="$PROJECT_DIR$/lib/middleware/console.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/middleware/extractor.js" afterPath="$PROJECT_DIR$/lib/middleware/extractor.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/middleware/fileWriter.js" afterPath="$PROJECT_DIR$/lib/middleware/fileWriter.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/server.js" afterPath="$PROJECT_DIR$/lib/server.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/testClient.js" afterPath="$PROJECT_DIR$/tests/testClient.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tests/testServer.js" afterPath="$PROJECT_DIR$/tests/testServer.js" />
     </list>
     <ignored path="log-server.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -64,10 +60,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="client.js" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="client.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/client.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="196" column="2" selection-start="4361" selection-end="4361" vertical-scroll-proportion="0.30357143">
+            <state line="212" column="0" selection-start="4566" selection-end="4566" vertical-scroll-proportion="-144.16">
               <folding />
             </state>
           </provider>
@@ -103,16 +99,16 @@
       <file leaf-file-name="testServer.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/testServer.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="42" column="27" selection-start="896" selection-end="896" vertical-scroll-proportion="0.0">
+            <state line="44" column="40" selection-start="994" selection-end="994" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="testClient.js" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="testClient.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/tests/testClient.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="9" column="19" selection-start="232" selection-end="232" vertical-scroll-proportion="0.0">
+            <state line="46" column="1" selection-start="718" selection-end="718" vertical-scroll-proportion="0.8490771">
               <folding />
             </state>
           </provider>
@@ -141,15 +137,15 @@
         <option value="$PROJECT_DIR$/lib/index.js" />
         <option value="$PROJECT_DIR$/index.js" />
         <option value="$PROJECT_DIR$/lib/logger.js" />
-        <option value="$PROJECT_DIR$/tests/testServer.js" />
         <option value="$PROJECT_DIR$/lib/handler.js" />
         <option value="$PROJECT_DIR$/lib/serverclient.js" />
         <option value="$PROJECT_DIR$/lib/middleware/extractor.js" />
         <option value="$PROJECT_DIR$/lib/middleware/console.js" />
         <option value="$PROJECT_DIR$/lib/middleware/fileWriter.js" />
-        <option value="$PROJECT_DIR$/tests/testClient.js" />
         <option value="$PROJECT_DIR$/lib/server.js" />
         <option value="$PROJECT_DIR$/lib/client.js" />
+        <option value="$PROJECT_DIR$/tests/testServer.js" />
+        <option value="$PROJECT_DIR$/tests/testClient.js" />
       </list>
     </option>
   </component>
@@ -427,7 +423,7 @@
           <properties />
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="1738" />
+      <option name="time" value="1749" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
@@ -499,23 +495,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/testServer.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="27" selection-start="896" selection-end="896" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/logger.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="5" column="24" selection-start="145" selection-end="145" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tests/testClient.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="19" selection-start="232" selection-end="232" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -536,7 +518,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/client.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="196" column="2" selection-start="4361" selection-end="4361" vertical-scroll-proportion="0.30357143">
+        <state line="212" column="0" selection-start="4566" selection-end="4566" vertical-scroll-proportion="-144.16">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/testServer.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="44" column="40" selection-start="994" selection-end="994" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/testClient.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="46" column="1" selection-start="718" selection-end="718" vertical-scroll-proportion="0.8490771">
           <folding />
         </state>
       </provider>
