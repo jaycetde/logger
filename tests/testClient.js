@@ -6,9 +6,15 @@ var logger = require('../index')
 
 var client1 = logger.createClient({
     host: '127.0.0.1'
-  , port: 5555
+  , tcpPort: 5555
+  , udpPort: 8989
   , handler: 'test'
-}, run1);
+  , callback: run1
+});
+
+client1.on('udp-send', function (buf) {
+    console.log('Sending - ' + buf.toString());
+});
 /*
 var client2 = logger.createClient({
     host: '192.168.1.120'

@@ -20,7 +20,7 @@ extractorMap = [
 
 var logServer = logger.createServer();
 
-var logInput = logger.logger(logServer, { port: 5555 }, function (sockets) {
+var logInput = logger.logger(logServer, { tcpPort: 5555, udpPort: 8989 }, function (sockets) {
     console.log('TCP:', sockets.tcp.address().port);
     console.log('UDP:', sockets.udp.address().port);
 });
