@@ -25,7 +25,7 @@ var client3 = logger.createClient({
 var x = 0;
 
 function run1() {
-    client1.log('Test ' + x++, x % );
+    client1.log('Test ' + x++, x % 8);
     setTimeout(run1, 500);
 }
 /*
