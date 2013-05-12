@@ -1,5 +1,5 @@
 # Logger
 
-    Centralized logging solution for Node.js
+Centralized logging solution for Node.js
     
-    More documentation on its way
+More documentation on its way
