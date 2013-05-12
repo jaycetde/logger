@@ -20,11 +20,21 @@ extractorMap = [
 
 var logServer = logger.createServer();
 
-var logIn = logger.logger(logServer, { port: 5555 });
+var logInput = logger.logger(logServer, { port: 5555 }, function (sockets) {
+    console.log('TCP: ', sockets.tcp.address().port);
+    console.log('UDP: ', sockets.udp.address().port);
+});
 
 var handler1 = logServer.createHandler('test');
 
 handler1.use(logger.console());
+
+logServer
+  .on('socket-close', function () { console.log('close'); })
+  .on('client-remove', function () { console.log('remove'); })
+  .on('handshake', function () { console.log('handshake'); })
+  .on('socket-connect', function () { console.log('connect'); })
+;
 
 /*
 var handler2 = logServer.createHandler('test2');
