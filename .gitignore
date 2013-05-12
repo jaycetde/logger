@@ -1,2 +1,4 @@
-# Ignore .idea folder (used by WebStorm text editor)
-.idea
+node_modules
+
+.c9revisions
+
